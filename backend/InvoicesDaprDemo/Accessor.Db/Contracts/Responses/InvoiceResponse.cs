@@ -1,4 +1,4 @@
-﻿namespace Manager.Invoices.Contracts.Responses;
+﻿namespace Accessor.Db.Contracts.Responses;
 
 public record InvoiceResponse
 {

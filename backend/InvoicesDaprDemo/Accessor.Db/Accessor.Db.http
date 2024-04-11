@@ -1,0 +1,6 @@
+@Accessor.Db_HostAddress = http://localhost:5037
+
+GET {{Accessor.Db_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

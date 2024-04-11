@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manager.Invoices", "Manager.Invoices\Manager.Invoices.csproj", "{E306B7DB-D7B9-4C01-A4D2-5D3068829F51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manager.Invoices", "Manager.Invoices\Manager.Invoices.csproj", "{E306B7DB-D7B9-4C01-A4D2-5D3068829F51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accessor.Db", "Accessor.Db\Accessor.Db.csproj", "{7F31D2A0-0A39-4195-8479-AD42E8EABB9E}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1F2FA772-53FE-40A0-AC08-B73F27E763BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{E306B7DB-D7B9-4C01-A4D2-5D3068829F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E306B7DB-D7B9-4C01-A4D2-5D3068829F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E306B7DB-D7B9-4C01-A4D2-5D3068829F51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F31D2A0-0A39-4195-8479-AD42E8EABB9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F31D2A0-0A39-4195-8479-AD42E8EABB9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F31D2A0-0A39-4195-8479-AD42E8EABB9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F31D2A0-0A39-4195-8479-AD42E8EABB9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F2FA772-53FE-40A0-AC08-B73F27E763BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F2FA772-53FE-40A0-AC08-B73F27E763BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F2FA772-53FE-40A0-AC08-B73F27E763BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F2FA772-53FE-40A0-AC08-B73F27E763BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

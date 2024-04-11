@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  manager.invoices:
+    image: ${DOCKER_REGISTRY-}managerinvoices
+    build:
+      context: .
+      dockerfile: Manager.Invoices/Dockerfile
+
+  accessor.db:
+    image: ${DOCKER_REGISTRY-}accessordb
+    build:
+      context: .
+      dockerfile: Accessor.Db/Dockerfile
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+        - 1433:1433
+    environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=StrongPassw0rd
+    volumes:
+        - ./../../database/db_init.sh:/db_init.sh
+        - ./../../database/create_db.sql:/create_db.sql
+        - ./../../database/data:/var/opt/mssql/data
+        - ./../../database/log:/var/opt/mssql/log
+        - ./../../database/secrets:/var/opt/mssql/secrets
+    command: /bin/bash /db_init.sh
