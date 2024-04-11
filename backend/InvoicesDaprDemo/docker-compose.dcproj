@@ -7,7 +7,7 @@
     <ProjectGuid>1f2fa772-53fe-40a0-ac08-b73f27e763ba</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>manager.invoices</DockerServiceName>
+    <DockerServiceName>accessor.db</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

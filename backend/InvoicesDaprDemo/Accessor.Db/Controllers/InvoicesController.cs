@@ -1,5 +1,7 @@
 using Accessor.Db.Contracts.Responses;
+using Accessor.Db.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Accessor.Db.Controllers;
 
@@ -8,10 +10,12 @@ namespace Accessor.Db.Controllers;
 public class InvoicesController : ControllerBase
 {
     private readonly ILogger<InvoicesController> _logger;
+    private readonly InvoicesContext _db;
 
-    public InvoicesController(ILogger<InvoicesController> logger)
+    public InvoicesController(ILogger<InvoicesController> logger, InvoicesContext db)
     {
         _logger = logger;
+        _db = db;
     }
 
     [HttpGet("/invoices")]
@@ -19,17 +23,17 @@ public class InvoicesController : ControllerBase
     {
         try
         {
-            await Task.Delay(1);
-            return new List<InvoiceResponse>
-        {
-            new()
-            {
-                Id = 0,
-                Amount = 12.2,
-                Name = "Test Invoice",
-                Status = "Active"
-            }
-        };
+            var result = await _db.Invoices
+                .Select(invoice => 
+                    new InvoiceResponse() 
+                    { 
+                        Id = invoice.Id, 
+                        Name = invoice.Name,
+                        Amount = 0,
+                        Status = "undefined"
+                    })
+                .ToListAsync();
+            return result;
         }
         catch (Exception ex)
         {
