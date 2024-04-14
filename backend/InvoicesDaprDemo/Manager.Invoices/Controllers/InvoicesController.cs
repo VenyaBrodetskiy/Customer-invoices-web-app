@@ -1,3 +1,4 @@
+using Dapr.Client;
 using Manager.Invoices.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,12 +8,13 @@ namespace Manager.Invoices.Controllers;
 [Route("[controller]")]
 public class InvoicesController : ControllerBase
 {
-
     private readonly ILogger<InvoicesController> _logger;
+    private readonly DaprClient _daprClient;
 
-    public InvoicesController(ILogger<InvoicesController> logger)
+    public InvoicesController(ILogger<InvoicesController> logger, DaprClient daprClient)
     {
         _logger = logger;
+        _daprClient = daprClient;
     }
 
     [HttpGet("/invoices")]
@@ -20,17 +22,10 @@ public class InvoicesController : ControllerBase
     {
         try
         {
-            await Task.Delay(1);
-            return new List<InvoiceResponse>
-            {
-                new()
-                {
-                    Id = 0,
-                    Amount = 12.2,
-                    Name = "Test Invoice",
-                    Status = "Active"
-                }
-            };
+            var result = await _daprClient.InvokeMethodAsync<List<InvoiceResponse>>(
+                HttpMethod.Get, "accessorDb", "/invoices");
+
+            return result is null ? NotFound() : result;
         }
         catch (Exception ex)
         {

@@ -5,9 +5,22 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manager.Invoices", "Manager.Invoices\Manager.Invoices.csproj", "{E306B7DB-D7B9-4C01-A4D2-5D3068829F51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accessor.Db", "Accessor.Db\Accessor.Db.csproj", "{7F31D2A0-0A39-4195-8479-AD42E8EABB9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accessor.Db", "Accessor.Db\Accessor.Db.csproj", "{7F31D2A0-0A39-4195-8479-AD42E8EABB9E}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1F2FA772-53FE-40A0-AC08-B73F27E763BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dapr", "dapr", "{08BE8032-B786-4071-B597-00C3D7D07CF9}"
+	ProjectSection(SolutionItems) = preProject
+		dapr\config.yaml = dapr\config.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "components", "components", "{FAF1225A-AC1D-47E4-B69C-EBD760731E21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db", "db", "{A6984908-741E-4A42-86F6-8D3F060FFFCB}"
+	ProjectSection(SolutionItems) = preProject
+		db\create_db.sql = db\create_db.sql
+		db\db_init.sh = db\db_init.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +43,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FAF1225A-AC1D-47E4-B69C-EBD760731E21} = {08BE8032-B786-4071-B597-00C3D7D07CF9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67D8C7B8-7C3B-4E20-A233-AC86DEAA5989}
