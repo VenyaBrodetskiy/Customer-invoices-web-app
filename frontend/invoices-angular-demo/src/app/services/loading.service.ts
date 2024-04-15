@@ -8,16 +8,24 @@ export class LoadingService {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading = this.loadingSubject.asObservable();
+  private activeRequests = 0;
 
   constructor() { }
 
   public setLoadingOn() {
-    console.log('Loading ON');
-    this.loadingSubject.next(true);
+    if (this.activeRequests === 0) {
+      console.log('Loading ON');
+      this.loadingSubject.next(true);
+    }
+    this.activeRequests++;
   }
 
   public setLoadingOff() {
-    console.log('Loading OFF');
-    this.loadingSubject.next(false);
+    this.activeRequests--;
+    if (this.activeRequests === 0) {
+      console.log('Loading OFF');
+      this.loadingSubject.next(false);
+    }
+    if (this.activeRequests <= 0) this.activeRequests = 0;
   }
 }

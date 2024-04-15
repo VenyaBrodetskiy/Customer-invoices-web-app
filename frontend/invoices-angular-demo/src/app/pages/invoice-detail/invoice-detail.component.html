@@ -1,27 +1,34 @@
-@if (invoice) {
-<div class="container mt-4">
-  <div class="card">
-    <div class="card-header bg-primary text-white">
-      <h2 class="mb-0">Invoice Details</h2>
-    </div>
-    <div class="card-body">
-      <p class="card-text">
-        <i class="bi bi-receipt mx-1"></i> <strong>ID:</strong> {{ invoice.id }}
-      </p>
-      <p class="card-text">
-        <i class="bi bi-circle-fill mx-1" [style.color]="invoice.status == 'Paid' ? '#198754' : '#dc3545'"></i>
-        <strong>Status:</strong> {{ invoice.status }}
-      </p>
-      <p class="card-text">
-        <i class="bi bi-currency-dollar mx-1"></i> <strong>Amount:</strong> ${{ invoice.amount }}
-      </p>
-      <p class="card-text">
-        <i class="bi bi-calendar3 mx-1"></i> <strong>Date Issued:</strong> {{ invoice.dateIssued | date:'medium' }}
-      </p>
-    </div>
-    <div class="card-footer">
-      <button class="btn btn-secondary" (click)="goBack()">Go Back</button>
+@if (invoiceForm) {
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h2 class="mb-0">Invoice Details</h2>
+      </div>
+      <div class="card-body">
+        <div class="mb-3 ">
+          <label class="me-1"><strong>ID:</strong></label>
+          <span>{{ invoiceForm.get('id')?.value }}</span>
+        </div>
+        <div class="mb-3">
+          <label for="invoiceStatus"><strong>Status:</strong></label>
+          <select class="form-select" id="invoiceStatus" [formControl]="statusControl">
+            <option value="Paid">Paid</option>
+            <option value="Unpaid">Unpaid</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="invoiceAmount"><strong>Amount:</strong></label>
+          <input type="number" class="form-control" id="invoiceAmount" [formControl]="amountControl">
+        </div>
+        <div class="mb-3">
+          <label for="invoiceDateIssued"><strong>Date Issued:</strong></label>
+          <input type="date" class="form-control" id="invoiceDateIssued" [formControl]="dateIssuedControl">
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-secondary" (click)="goBack()">Go Back</button>
+      </div>
     </div>
   </div>
-</div>
 }
