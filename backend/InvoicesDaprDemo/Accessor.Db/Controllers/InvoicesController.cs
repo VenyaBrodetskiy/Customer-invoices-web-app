@@ -29,8 +29,9 @@ public class InvoicesController : ControllerBase
                     { 
                         Id = invoice.Id, 
                         Name = invoice.Name,
-                        Amount = 0,
-                        Status = "undefined"
+                        Amount = invoice.Amount,
+                        Status = invoice.Status,
+                        DateIssued = invoice.DateIssued
                     })
                 .ToListAsync();
             return result;

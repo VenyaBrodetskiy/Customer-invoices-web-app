@@ -6,5 +6,6 @@ public record InvoiceResponse
 
     public required string Status { get; set; }
     public required string Name { get; set; }
-    public required double Amount { get; set; }
+    public required int Amount { get; set; }
+    public required DateTime DateIssued { get; set; }
 }

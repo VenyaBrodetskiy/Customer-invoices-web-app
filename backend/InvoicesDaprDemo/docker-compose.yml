@@ -7,6 +7,8 @@ services:
     build:
       context: .
       dockerfile: Manager.Invoices/Dockerfile
+    ports: 
+      - 8081:8081
     networks:
       - network-dapr
 

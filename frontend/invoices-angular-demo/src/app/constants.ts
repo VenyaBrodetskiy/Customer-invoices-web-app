@@ -6,3 +6,5 @@ export const States = {
   profile: 'profile',
   logout: 'logout',
 }
+
+export const baseUrl = 'https://localhost:8081';
