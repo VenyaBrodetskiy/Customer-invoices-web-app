@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { States } from '../../../constants';
 
 @Component({
   selector: 'inv-sidebar',
@@ -10,6 +11,7 @@ import { RouterLink } from '@angular/router';
 })
 export class SidebarComponent {
   public console: any;
+  public States = States;
 
   constructor() {
     console = console;    

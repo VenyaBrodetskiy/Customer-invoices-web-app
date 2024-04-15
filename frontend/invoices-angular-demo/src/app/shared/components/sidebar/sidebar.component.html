@@ -2,33 +2,33 @@
   <div class="d-flex flex-shrink-0 h-100">
     <ul class="nav nav-pills d-flex flex-column">
       <li class="nav-item my-1">
-        <a routerLink="/home" class="nav-link text-white">
+        <a [routerLink]="States.home" class="nav-link text-white">
           <i class="bi bi-house-door fs-3 me-5"></i>
           <span class="fs-4 section-name">Home</span>
         </a>
       </li>
       <li class="nav-item my-1">
-        <a routerLink="/invoices" class="nav-link text-white">
+        <a [routerLink]="States.invoices" class="nav-link text-white">
           <i class="bi bi-receipt fs-3 me-5"></i>
           <span class="fs-4 section-name">Invoices</span>
         </a>
       </li>
       <li class="nav-item my-1">
-        <a routerLink="/about" class="nav-link text-white">
+        <a [routerLink]="States.about" class="nav-link text-white">
           <i class="bi bi-info-circle-fill fs-3 me-5"></i>
           <span class="fs-4 section-name">About</span>
         </a>
       </li>
 
       <li class="nav-item mt-auto">
-        <a routerLink="/profile" class="nav-link text-white">
+        <a [routerLink]="States.profile" class="nav-link text-white">
           <i class="bi bi-person-circle fs-3 me-5"></i>
           <span class="fs-4 section-name">User name</span>
         </a>
       </li>
       
       <li class="nav-item mt-5">
-        <a routerLink="/logout" class="nav-link text-white" (onClick)="console.log('logout')">
+        <a [routerLink]="States.logout" class="nav-link text-white" (onClick)="console.log('logout')">
           <i class="bi bi-box-arrow-right fs-3 me-5"></i>
           <span class="fs-4 section-name">Logout</span>
         </a>
