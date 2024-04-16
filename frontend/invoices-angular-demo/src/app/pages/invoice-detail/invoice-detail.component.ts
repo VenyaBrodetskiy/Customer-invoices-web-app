@@ -65,7 +65,7 @@ export class InvoiceDetailComponent implements OnInit {
     console.log(`Updating ${invoiceId} to ${this.invoiceForm.value}`);
     
     this.http
-      .patch(`https://localhost:1111/invoices/${invoiceId}`, this.invoiceForm.value)
+      .patch(`https://localhost:8081/invoices/${invoiceId}`, this.invoiceForm.value)
       .subscribe({
         next: (reponse) => console.log('Updated invoice', reponse),
         error: (error) => console.error('Update failed', error),

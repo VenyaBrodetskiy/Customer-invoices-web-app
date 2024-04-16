@@ -33,4 +33,23 @@ public class InvoicesController : ControllerBase
             return Problem(ex.Message);
         }
     }
+
+    [HttpPatch("/invoices/{id}")]
+    public async Task<ActionResult<bool>> UpdateInvoice(string id)
+    {
+        try
+        {
+            await Task.Delay(1);
+            return Ok();
+            //var result = await _daprClient.InvokeMethodAsync<List<InvoiceResponse>>(
+            //    HttpMethod.Get, "accessorDb", "/invoices");
+
+            //return result is null ? NotFound() : result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Problem(ex.Message);
+        }
+    }
 }

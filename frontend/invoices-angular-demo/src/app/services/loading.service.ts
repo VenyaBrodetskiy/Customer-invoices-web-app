@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class LoadingService {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
-  public isLoading = this.loadingSubject.asObservable();
+  public isLoading$ = this.loadingSubject.asObservable();
   private activeRequests = 0;
 
   constructor() { }

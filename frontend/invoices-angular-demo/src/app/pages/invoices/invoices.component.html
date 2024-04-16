@@ -2,11 +2,14 @@
   <div class="row">
     @for (invoice of invoices; track $index) {
     <div class="col-12 col-md-6 col-lg-4 mb-4">
-      <div class="card h-100">
+      <div class="card h-100 shadow-sm"> 
         <div class="card-body">
-          <h5 class="card-title">
-            <i class="bi bi-receipt"></i>
-            Invoice #{{ invoice.id }}
+          <h5 class="card-title mb-2 d-flex align-items-center"> 
+            <i class="bi bi-receipt me-2" style="font-size: 1.5em;"></i>
+            <div class="d-flex flex-column justify-content-center">
+              <div class="text-muted" style="font-size: 0.8em;">Invoice #{{ invoice.id }}</div>
+              <div class="fw-bold">{{ invoice.name }}</div> 
+            </div>
           </h5>
           <p class="card-text">
             <i class="bi bi-circle-fill" [style.color]="invoice.status === 'Paid' ? '#198754' : '#dc3545'"></i>
@@ -21,7 +24,7 @@
             Date Issued: {{ invoice.dateIssued | date:'mediumDate' }}
           </p>
         </div>
-        <div class="card-footer">
+        <div class="card-footer bg-white">
           <button class="btn btn-primary" [routerLink]="['/' + States.invoice, invoice.id]">View Details</button>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { Invoice } from '../../models/invoice.model';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { States } from '../../constants';
-import { InvoiceService } from '../../services/invoice.service';
+import { InvoiceStateService } from '../../services/invoice.service';
 
 @Component({
   selector: 'inv-invoices',
@@ -14,19 +14,12 @@ import { InvoiceService } from '../../services/invoice.service';
 })
 export class InvoicesComponent implements OnInit {
   public States = States;
-  invoices: Invoice[] = [
-    { id: 1, dateIssued: new Date(), status: 'Paid', amount: 200 },
-    { id: 2, dateIssued: new Date(), status: 'Pending', amount: 450 },
-    { id: 3, dateIssued: new Date(), status: 'Overdue', amount: 150 }
-  ];
+  invoices: Invoice[] = []
 
-  constructor(private invoiceService: InvoiceService) { }
+  constructor(private invoiceService: InvoiceStateService) { }
 
   ngOnInit(): void {
     this.invoiceService.getAll()
-      .subscribe({
-        next: (invoices) => { this.invoices = invoices },
-        error: (error) => { console.error('Failed to retrieve invoices', error)},
-      })
+      .subscribe(invoices => { this.invoices = invoices })
   }
 }
