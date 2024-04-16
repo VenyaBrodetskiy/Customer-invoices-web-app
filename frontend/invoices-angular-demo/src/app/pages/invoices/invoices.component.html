@@ -1,6 +1,6 @@
-<div class="container mt-4">
+<div class="container mt-2">
   <div class="row">
-    @for (invoice of invoices; track $index) {
+    @for (invoice of invoices$ | async; track $index) {
     <div class="col-12 col-md-6 col-lg-4 mb-4">
       <div class="card h-100 shadow-sm"> 
         <div class="card-body">

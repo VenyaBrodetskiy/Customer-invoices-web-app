@@ -1,3 +1,4 @@
+using Accessor.Db.Contracts.Requests;
 using Accessor.Db.Contracts.Responses;
 using Accessor.Db.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -41,5 +42,74 @@ public class InvoicesController : ControllerBase
             _logger.LogError(ex.Message);
             return Problem(ex.Message);
         }
+    }
+
+    [HttpPost("/update-invoice")]
+    public async Task<ActionResult<InvoiceResponse>> UpdateInvoice([FromBody] InvoiceResponse invoice)
+    {
+        try
+        {
+            var invoiceToChange = await _db.Invoices
+                .Where(inv => inv.Id == invoice.Id)
+                .FirstAsync();
+
+            invoiceToChange.Status = invoice.Status;
+            invoiceToChange.Amount = invoice.Amount;
+            invoiceToChange.DateIssued = invoice.DateIssued;
+            invoiceToChange.Name = invoice.Name;
+
+            await _db.SaveChangesAsync();
+
+            return ToDto(invoiceToChange);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Problem(ex.Message);
+        }
+    }
+
+    [HttpPost("/add-invoice")]
+    public async Task<ActionResult<InvoiceResponse>> AddInvoice([FromBody] NewInvoiceRequest invoice)
+    {
+        try
+        {
+            var newInvoice = FromDto(invoice);
+            _db.Invoices.Add(newInvoice);
+
+            await _db.SaveChangesAsync();
+
+            return ToDto(newInvoice);
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Problem(ex.Message);
+        }
+    }
+
+    private static Invoice FromDto(NewInvoiceRequest invoice)
+    {
+        return new Invoice()
+        {
+            Id = Const.NonExistId,
+            Status = invoice.Status,
+            Amount = invoice.Amount,
+            DateIssued = invoice.DateIssued,
+            Name = invoice.Name,
+        };
+    }
+
+    private static InvoiceResponse ToDto(Invoice invoice)
+    {
+        return new()
+        {
+            Id = invoice.Id,
+            Amount = invoice.Amount,
+            DateIssued = invoice.DateIssued,
+            Name = invoice.Name,
+            Status = invoice.Status,
+        };
     }
 }

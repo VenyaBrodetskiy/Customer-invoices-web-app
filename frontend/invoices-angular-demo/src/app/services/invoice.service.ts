@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 import { Invoice } from '../models/invoice.model';
 import { baseUrl } from '../constants';
 
@@ -16,6 +16,12 @@ export class InvoiceStateService {
   loadInvoices(): void {
     this.http
       .get<Invoice[]>(`${baseUrl}/invoices`)
+      .pipe(
+        catchError(error => {
+          console.error('Failed to load invoices', error);
+          return of([]);
+        })
+      )
       .subscribe(invoices => { this.invoicesSubject.next(invoices) });
   }
 
@@ -29,5 +35,31 @@ export class InvoiceStateService {
           return of([]);
         })
       );
+  }
+
+  getById(id: number): Observable<Invoice | undefined> {
+    return this.invoices$.pipe(
+      map(invoices => invoices.find(invoice => invoice.id === id))
+    );
+  }
+
+  updateInvoice(invoice: Invoice): void {
+    this.http
+      .patch<Invoice>(`${baseUrl}/invoices`, invoice)
+      .pipe(
+        tap(updatedInvoice => {
+          const invoices = this.invoicesSubject.getValue();
+          const index = invoices.findIndex(inv => inv.id === updatedInvoice.id);
+          if (index > -1) {
+            invoices[index] = updatedInvoice;
+            this.invoicesSubject.next(invoices)
+          }
+        }),
+        catchError(error => {
+          console.error('Failed to update invoice', error);
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 }

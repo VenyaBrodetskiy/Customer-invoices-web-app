@@ -14,7 +14,7 @@ export class LoadingInterceptor implements HttpInterceptor {
     this.loadingService.setLoadingOn();
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        this.toastService.showToast(`Error: ${error.headers, error.statusText}`);
+        this.toastService.showToast(`Error: ${error.message}`);
         return throwError(() => error)
       }),
       finalize(() => this.loadingService.setLoadingOff())

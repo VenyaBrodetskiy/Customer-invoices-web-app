@@ -6,12 +6,16 @@
       </div>
       <div class="card-body">
         <div class="mb-3 ">
-          <label class="me-1"><strong>ID:</strong></label>
-          <span>{{ invoiceForm.get('id')?.value }}</span>
+          <label for="invoiceId"><strong>ID:</strong></label>
+          <input type="text" class="form-control" id="invoiceId" [value]="invoiceForm.controls.id.value" disabled>
+        </div>
+        <div class="mb-3">
+          <label for="invoiceName"><strong>Name:</strong></label>
+          <input type="text" class="form-control" id="invoiceName" [formControl]="invoiceForm.controls.name">
         </div>
         <div class="mb-3">
           <label for="invoiceStatus"><strong>Status:</strong></label>
-          <select class="form-select" id="invoiceStatus" [formControl]="statusControl">
+          <select class="form-select" id="invoiceStatus" [formControl]="invoiceForm.controls.status">
             <option value="Paid">Paid</option>
             <option value="Unpaid">Unpaid</option>
             <option value="Pending">Pending</option>
@@ -19,11 +23,11 @@
         </div>
         <div class="mb-3">
           <label for="invoiceAmount"><strong>Amount:</strong></label>
-          <input type="number" class="form-control" id="invoiceAmount" [formControl]="amountControl">
+          <input type="number" class="form-control" id="invoiceAmount" [formControl]="invoiceForm.controls.amount">
         </div>
         <div class="mb-3">
           <label for="invoiceDateIssued"><strong>Date Issued:</strong></label>
-          <input type="date" class="form-control" id="invoiceDateIssued" [formControl]="dateIssuedControl">
+          <input type="date" class="form-control" id="invoiceDateIssued" [formControl]="invoiceForm.controls.dateIssued">
         </div>
       </div>
       <div class="card-footer">

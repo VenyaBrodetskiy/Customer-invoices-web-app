@@ -1,78 +1,79 @@
-import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { DatePipe, Location, formatDate } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { debounceTime } from 'rxjs';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subject, debounceTime, map, switchMap, takeUntil } from 'rxjs';
+import { InvoiceStateService } from '../../services/invoice.service';
+import { Invoice } from '../../models/invoice.model';
 
 @Component({
   selector: 'inv-invoice-detail',
   standalone: true,
-  imports: [ReactiveFormsModule, HttpClientModule],
+  imports: [ReactiveFormsModule, DatePipe],
   templateUrl: './invoice-detail.component.html',
   styleUrl: './invoice-detail.component.css'
 })
-export class InvoiceDetailComponent implements OnInit {
+export class InvoiceDetailComponent implements OnInit, OnDestroy {
+  private unsubscribe$ = new Subject<void>();
+  
   invoiceForm = new FormGroup({
-    id: new FormControl(0),
-    status: new FormControl(''),
-    amount: new FormControl(0),
-    dateIssued: new FormControl(''),
+    id: new FormControl(0, Validators.required),
+    name: new FormControl('', Validators.required),
+    status: new FormControl('', Validators.required),
+    amount: new FormControl(0, Validators.required),
+    dateIssued: new FormControl('', Validators.required),
   });
 
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private http: HttpClient) { }
+    private invoiceService: InvoiceStateService) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const invoiceIdString = params.get('id');
-      const invoiceId = invoiceIdString ? +invoiceIdString : 0;
-
-      this.invoiceForm.patchValue({
-        id: invoiceId,
-        status: 'Paid',
-        amount: 1500,
-        dateIssued: '2024-04-15'
-      })
-    });
+    this.route.params
+      .pipe(
+        map(params => +params['id']),
+        switchMap(id => this.invoiceService.getById(id)),
+        takeUntil(this.unsubscribe$))
+      .subscribe(invoice => {
+        invoice && this.invoiceForm.patchValue({
+          ...invoice,
+          dateIssued: formatDate(invoice.dateIssued, 'yyyy-MM-dd', 'en-US')
+        }, { emitEvent: false })
+      });
 
     this.invoiceForm.valueChanges
-      .pipe(debounceTime(1000))
+      .pipe(
+        debounceTime(500),
+        takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => { this.updateInvoice() }
       })
   }
 
-  // TODO: pass data from prev component or retrieve from DB
-
-  get statusControl(): FormControl<string> {
-    return this.invoiceForm.get('status') as FormControl<string>;
-  }
-
-  get amountControl(): FormControl<number> {
-    return this.invoiceForm.get('amount') as FormControl<number>;
-  }
-
-  get dateIssuedControl(): FormControl<string> {
-    return this.invoiceForm.get('dateIssued') as FormControl<string>;
-  }
-
   updateInvoice() {
     const invoiceId = this.invoiceForm.get('id')?.value;
+    if (!invoiceId) return;
 
-    console.log(`Updating ${invoiceId} to ${this.invoiceForm.value}`);
+    console.log(`Updating invoice N:${invoiceId} to ${JSON.stringify(this.invoiceForm.value)}`);
     
-    this.http
-      .patch(`https://localhost:8081/invoices/${invoiceId}`, this.invoiceForm.value)
-      .subscribe({
-        next: (reponse) => console.log('Updated invoice', reponse),
-        error: (error) => console.error('Update failed', error),
-      });
+    const updatedInvoice: Invoice = {
+      id: this.invoiceForm.value.id ?? 0,
+      name: this.invoiceForm.value.name ?? '',
+      status: this.invoiceForm.value.status ?? '',
+      amount: this.invoiceForm.value.amount ?? 0,
+      dateIssued: this.invoiceForm.value.dateIssued ?? ''
+    }
+
+    this.invoiceService.updateInvoice(updatedInvoice);
   }
 
   goBack(): void {
     this.location.back();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

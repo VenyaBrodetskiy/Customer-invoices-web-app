@@ -1,4 +1,5 @@
 using Dapr.Client;
+using Manager.Invoices.Contracts.Requests;
 using Manager.Invoices.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,22 +35,49 @@ public class InvoicesController : ControllerBase
         }
     }
 
-    [HttpPatch("/invoices/{id}")]
-    public async Task<ActionResult<bool>> UpdateInvoice(string id)
+    [HttpPatch("/invoices")]
+    public async Task<ActionResult<InvoiceResponse>> UpdateInvoice([FromBody] InvoiceRequest invoice)
     {
         try
         {
-            await Task.Delay(1);
-            return Ok();
-            //var result = await _daprClient.InvokeMethodAsync<List<InvoiceResponse>>(
-            //    HttpMethod.Get, "accessorDb", "/invoices");
+            var result = await _daprClient.InvokeMethodAsync<InvoiceResponse, InvoiceResponse>(
+                "accessorDb", "/update-invoice", ToDto(invoice));
 
-            //return result is null ? NotFound() : result;
+            return result is null ? Problem() : result;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
             return Problem(ex.Message);
         }
+    }
+
+    [HttpPost("/invoices")]
+    public async Task<ActionResult<InvoiceResponse>> AddInvoice([FromBody] NewInvoiceRequest invoice)
+    {
+        try
+        {
+            var result = await _daprClient.InvokeMethodAsync<NewInvoiceRequest, InvoiceResponse>(
+                "accessorDb", "/add-invoice", invoice);
+
+            return result is null ? Problem() : result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Problem(ex.Message);
+        }
+    }
+
+    private static InvoiceResponse ToDto(InvoiceRequest invoice)
+    {
+        return new()
+        {
+            Id = invoice.Id,
+            Amount = invoice.Amount,
+            DateIssued = invoice.DateIssued,
+            Name = invoice.Name,
+            Status = invoice.Status,
+        };
     }
 }
