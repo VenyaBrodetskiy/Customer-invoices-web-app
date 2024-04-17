@@ -25,16 +25,27 @@ public class InvoicesController : ControllerBase
         try
         {
             var result = await _db.Invoices
-                .Select(invoice => 
-                    new InvoiceResponse() 
-                    { 
-                        Id = invoice.Id, 
-                        Name = invoice.Name,
-                        Amount = invoice.Amount,
-                        Status = invoice.Status,
-                        DateIssued = invoice.DateIssued
-                    })
+                .Select(invoice => ToDto(invoice))
                 .ToListAsync();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Problem(ex.Message);
+        }
+    }
+
+    [HttpGet("/invoice/{id}")]
+    public async Task<ActionResult<InvoiceResponse>> GetInvoice(int id)
+    {
+        try
+        {
+            var result = await _db.Invoices
+                .Where(invoice => invoice.Id == id)
+                .Select(invoice => ToDto(invoice))
+                .FirstAsync();
+
             return result;
         }
         catch (Exception ex)

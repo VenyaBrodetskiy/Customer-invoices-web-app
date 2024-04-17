@@ -21,8 +21,8 @@
             [formControl]="invoiceForm.controls.status"
             [class.is-invalid]="invoiceForm.controls.status.invalid && invoiceForm.controls.status.touched">
             <option value="Paid">Paid</option>
-            <option value="Unpaid">Unpaid</option>
             <option value="Pending">Pending</option>
+            <option value="Overdue">Overdue</option>
           </select>
         </div>
         <div class="mb-3">
@@ -39,12 +39,24 @@
         </div>
       </div>
       <div class="card-footer">
-        <button class="btn btn-secondary" (click)="goBack()">Go Back</button>
+        <button class="btn btn-secondary me-2" (click)="goBack()">Go Back</button>
         
+        
+
         @if (!invoiceForm.value.id) {
-          <button class="btn btn-success mx-1" (click)="createInvoice()" [disabled]="invoiceForm.invalid">Create New</button>
+          <button class="btn btn-success" (click)="createInvoice()" [disabled]="invoiceForm.invalid">Create New</button>
         } @else {
-          <button class="btn btn-success mx-1" (click)="updateInvoice()" [disabled]="invoiceForm.invalid">Save</button>
+
+          <button class="btn btn-success me-2" (click)="updateInvoice()" [disabled]="invoiceForm.invalid">Save</button>
+          @if (isLoading$ | async) {
+          <span class="text-warning m-auto">
+            <i class="bi bi-arrow-clockwise"></i>Updating...
+          </span>
+          } @else {
+          <span class="text-success">
+            <i class="bi bi-check-lg"></i>Auto save
+          </span>
+          }
         }
       </div>
     </div>

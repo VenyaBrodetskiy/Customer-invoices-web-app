@@ -35,6 +35,23 @@ public class InvoicesController : ControllerBase
         }
     }
 
+    [HttpGet("/invoices/{id}")]
+    public async Task<ActionResult<InvoiceResponse>> GetInvoice(int id)
+    {
+        try
+        {
+            var result = await _daprClient.InvokeMethodAsync<InvoiceResponse>(
+                HttpMethod.Get, "accessorDb", $"/invoice/{id}");
+
+            return result is null ? NotFound() : result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Problem(ex.Message);
+        }
+    }
+
     [HttpPatch("/invoices")]
     public async Task<ActionResult<InvoiceResponse>> UpdateInvoice([FromBody] InvoiceRequest invoice)
     {

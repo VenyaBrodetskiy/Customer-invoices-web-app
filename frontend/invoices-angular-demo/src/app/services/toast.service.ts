@@ -5,15 +5,15 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class ToastService {
-  private toastSubject = new Subject<string>();
+  private toastSubject$ = new Subject<string>();
 
   constructor() { }
 
   showToast(message: string) {
-    this.toastSubject.next(message);
+    this.toastSubject$.next(message);
   }
 
   getToastMessage(): Observable<string> {
-    return this.toastSubject.asObservable();
+    return this.toastSubject$.asObservable();
   }
 }

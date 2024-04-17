@@ -1,4 +1,4 @@
-import { DatePipe, formatDate } from '@angular/common';
+import { AsyncPipe, DatePipe, formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -6,16 +6,18 @@ import { Subject, debounceTime, filter, map, of, switchMap, takeUntil } from 'rx
 import { InvoiceStateService } from '../../services/invoice.service';
 import { Invoice, NewInvoice } from '../../models/invoice.model';
 import { States } from '../../constants';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'inv-invoice-detail',
   standalone: true,
-  imports: [ReactiveFormsModule, DatePipe],
+  imports: [ReactiveFormsModule, DatePipe, AsyncPipe],
   templateUrl: './invoice-detail.component.html',
   styleUrl: './invoice-detail.component.css'
 })
 export class InvoiceDetailComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
+  public isLoading$ = this.loadingService.isLoading$;
   
   invoiceForm = new FormGroup({
     id: new FormControl(0, Validators.required),
@@ -28,7 +30,8 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private invoiceService: InvoiceStateService) { }
+    private invoiceService: InvoiceStateService,
+    private loadingService: LoadingService) { }
 
   ngOnInit(): void {
     this.route.params

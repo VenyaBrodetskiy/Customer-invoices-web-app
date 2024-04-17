@@ -8,8 +8,8 @@ import { baseUrl } from '../constants';
   providedIn: 'root'
 })
 export class InvoiceStateService {
-  private invoicesSubject = new BehaviorSubject<Invoice[]>([]);
-  public invoices$: Observable<Invoice[]> = this.invoicesSubject.asObservable();
+  private invoicesSubject$ = new BehaviorSubject<Invoice[]>([]);
+  public invoices$: Observable<Invoice[]> = this.invoicesSubject$.asObservable();
 
   constructor(private http: HttpClient) { }
   
@@ -22,7 +22,7 @@ export class InvoiceStateService {
           return of([]);
         })
       )
-      .subscribe(invoices => { this.invoicesSubject.next(invoices) });
+      .subscribe(invoices => { this.invoicesSubject$.next(invoices) });
   }
 
   getAll(): Observable<Invoice[]> {
@@ -38,9 +38,23 @@ export class InvoiceStateService {
   }
 
   getById(id: number): Observable<Invoice | undefined> {
-    return this.invoices$.pipe(
-      map(invoices => invoices.find(invoice => invoice.id === id))
-    );
+    const invoices: Invoice[] = this.invoicesSubject$.getValue();
+
+    if (invoices.length !== 0) {
+      return this.invoices$.pipe(
+        map(invoices => invoices.find(invoice => invoice.id === id))
+      );
+    } else {
+      return this.http
+        .get<Invoice>(`${baseUrl}/invoices/${id}`)
+        .pipe(
+          tap(data => console.log('Invoices fetched', data)),
+          catchError(error => {
+            console.error('Failed to retrieve invoices', error);
+            return of();
+          })
+        );
+    }
   }
 
   updateInvoice(invoice: Invoice): void {
@@ -48,11 +62,11 @@ export class InvoiceStateService {
       .patch<Invoice>(`${baseUrl}/invoices`, invoice)
       .pipe(
         tap(updatedInvoice => {
-          const invoices = this.invoicesSubject.getValue();
+          const invoices = this.invoicesSubject$.getValue();
           const index = invoices.findIndex(inv => inv.id === updatedInvoice.id);
           if (index > -1) {
             invoices[index] = updatedInvoice;
-            this.invoicesSubject.next(invoices)
+            this.invoicesSubject$.next(invoices)
           }
         }),
         catchError(error => {
@@ -65,10 +79,10 @@ export class InvoiceStateService {
 
   createInvoice(invoice: NewInvoice): void {
     this.http
-      .post<Invoice>(`${baseUrl}/invoices`, invoice)
+      .post<Invoice>(`${baseUrl}/invoices1`, invoice)
       .pipe(
         tap(invoice => {
-          const invoices = this.invoicesSubject.getValue();
+          const invoices = this.invoicesSubject$.getValue();
           invoices.unshift(invoice);
         }),
         catchError(error => {
