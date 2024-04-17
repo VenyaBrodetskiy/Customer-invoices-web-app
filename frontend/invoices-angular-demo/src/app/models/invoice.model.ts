@@ -5,3 +5,10 @@ export interface Invoice {
   status: string;
   amount: number;
 }
+
+export interface NewInvoice {
+  name: string;
+  dateIssued: string;
+  status: string;
+  amount: number;
+}

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
-import { Invoice } from '../models/invoice.model';
+import { Invoice, NewInvoice } from '../models/invoice.model';
 import { baseUrl } from '../constants';
 
 @Injectable({
@@ -57,6 +57,22 @@ export class InvoiceStateService {
         }),
         catchError(error => {
           console.error('Failed to update invoice', error);
+          return of(null);
+        })
+      )
+      .subscribe();
+  }
+
+  createInvoice(invoice: NewInvoice): void {
+    this.http
+      .post<Invoice>(`${baseUrl}/invoices`, invoice)
+      .pipe(
+        tap(invoice => {
+          const invoices = this.invoicesSubject.getValue();
+          invoices.unshift(invoice);
+        }),
+        catchError(error => {
+          console.error('Failed to create invoice', error);
           return of(null);
         })
       )

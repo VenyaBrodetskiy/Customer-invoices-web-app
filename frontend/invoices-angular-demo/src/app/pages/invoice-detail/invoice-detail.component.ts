@@ -1,10 +1,11 @@
-import { DatePipe, Location, formatDate } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subject, debounceTime, map, switchMap, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, map, of, switchMap, takeUntil } from 'rxjs';
 import { InvoiceStateService } from '../../services/invoice.service';
-import { Invoice } from '../../models/invoice.model';
+import { Invoice, NewInvoice } from '../../models/invoice.model';
+import { States } from '../../constants';
 
 @Component({
   selector: 'inv-invoice-detail',
@@ -20,26 +21,38 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
     id: new FormControl(0, Validators.required),
     name: new FormControl('', Validators.required),
     status: new FormControl('', Validators.required),
-    amount: new FormControl(0, Validators.required),
+    amount: new FormControl(0, [Validators.required, Validators.min(1)]),
     dateIssued: new FormControl('', Validators.required),
   });
 
   constructor(
-    private location: Location,
     private route: ActivatedRoute,
+    private router: Router,
     private invoiceService: InvoiceStateService) { }
 
   ngOnInit(): void {
     this.route.params
       .pipe(
         map(params => +params['id']),
-        switchMap(id => this.invoiceService.getById(id)),
+        switchMap(id => {
+          if (id) {
+            return this.invoiceService.getById(id)
+          } else {
+            this.setupNewInvoiceForm();
+            return of(null);
+          }
+        }),
+        filter(invoice => invoice !== null),
         takeUntil(this.unsubscribe$))
       .subscribe(invoice => {
-        invoice && this.invoiceForm.patchValue({
-          ...invoice,
-          dateIssued: formatDate(invoice.dateIssued, 'yyyy-MM-dd', 'en-US')
-        }, { emitEvent: false })
+        if (invoice) {
+          this.invoiceForm.patchValue({
+            ...invoice,
+            dateIssued: formatDate(invoice.dateIssued, 'yyyy-MM-dd', 'en-US')
+          }, { emitEvent: false })
+        } else {
+          this.router.navigate(['/404']);
+        }
       });
 
     this.invoiceForm.valueChanges
@@ -51,9 +64,20 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
       })
   }
 
+  setupNewInvoiceForm(): void {
+    this.invoiceForm.reset({
+      id: 0,
+      name: '',
+      status: '',
+      amount: 0,
+      dateIssued: formatDate(new Date, 'yyyy-MM-dd', 'en-US')
+    })
+  }
+
   updateInvoice() {
     const invoiceId = this.invoiceForm.get('id')?.value;
     if (!invoiceId) return;
+    if (!this.invoiceForm.valid) return;
 
     console.log(`Updating invoice N:${invoiceId} to ${JSON.stringify(this.invoiceForm.value)}`);
     
@@ -68,8 +92,24 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
     this.invoiceService.updateInvoice(updatedInvoice);
   }
 
+  createInvoice() {
+    if (!this.invoiceForm.valid) return;
+
+    const newInvoice: NewInvoice = {
+      name: this.invoiceForm.value.name!,
+      status: this.invoiceForm.value.status!,
+      amount: this.invoiceForm.value.amount!,
+      dateIssued: this.invoiceForm.value.dateIssued!
+    }
+
+    console.log(`Creating invoice ${JSON.stringify(this.invoiceForm.value)}`);
+
+    this.invoiceService.createInvoice(newInvoice);
+    this.goBack();
+  }
+
   goBack(): void {
-    this.location.back();
+    this.router.navigate([`${States.invoices}`]);
   }
 
   ngOnDestroy(): void {

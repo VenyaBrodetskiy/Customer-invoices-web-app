@@ -11,6 +11,7 @@ export const routes: Routes = [
   { path: States.home, component: HomeComponent },
   { path: States.invoices, component: InvoicesComponent },
   { path: `${States.invoice}/:id`, component: InvoiceDetailComponent },
+  { path: `${States.invoice}`, component: InvoiceDetailComponent },
   { path: States.about, component: AboutComponent },
   { path: '**', component: PageNotFoundComponent },
 ];
