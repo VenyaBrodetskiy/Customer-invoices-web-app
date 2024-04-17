@@ -1,1 +1,49 @@
-<p>about works!</p>
+<div class="vh-100 d-flex align-items-start">
+  <div class="w-100 p-3">
+    <h1 class="display-3">About</h1>
+    <p class="lead">This demo application showcases full-stack development with Angular and C#, featuring microservice architecture
+      and modern development practices.</p>
+
+    <h2 class="display-6">Technologies Used</h2>
+    <ul>
+      <li>Client-Side: Angular 17, standalone components (without Angular modules)</li>
+      <li>Backend: .NET 8, ASP.NET Web Api</li>
+      <li>Architecture: Microservice architecture with Dapr for interservice communication</li>
+      <li>Data Access: Entity Framework over MS SQL</li>
+      <li>Containerization: Dockerized components for easy setup and deployment</li>
+    </ul>
+    
+    <h2 class="display-6">Features</h2>
+    <h3 class="lead">Client-Side</h3>
+    <ul>
+      <li>CRUD Operations: Create, read, update invoices.</li>
+      <li>Real-time Updates: Automatically updates views when invoices are modified.</li>
+      <li>Validation: Ensures data integrity before submission to the backend.</li>
+      <li>Global State Management:
+        <ul>
+          <li>Loading Interceptor: Handles HTTP request loading states.</li>
+          <li>Toast Service: Provides feedback on operations with toast notifications.</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <h3 class="lead">Backend</h3>
+    <ul>
+      <li>Microservice Architecture: Though typically overkill for a small app, used here to demonstrate the use of
+        microservices.</li>
+      <li>iDesign Methodology: Incorporates Managers to handle requests and Accessors for external resource interactions,
+        promoting clean separation of concerns. Engines might be added for handling complex logic.</li>
+      <li>Dapr for Service Communication: Utilizes Dapr to simplify interservice communication. <a href="https://dapr.io/"
+          target="_blank">What is Dapr?</a></li>
+      <li>Scalability and Responsiveness: Designed for easy transition to asynchronous operations. Dapr ensures it's easy to
+        add message queuing and real-time updates via SignalR once needed.</li>
+      <li>Entity Framework: Manages database operations, backed by a SQL database with a provided initialization script.
+      </li>
+      <li>Dockerization: Each component, including services and database, is containerized to simplify development and
+        deployment.</li>
+    </ul>
+
+    <a href="https://github.com/VenyaBrodetskiy/Customer-invoices-web-app" class="btn btn-warning my-1" target="_blank">View README</a>
+
+  </div>
+</div>

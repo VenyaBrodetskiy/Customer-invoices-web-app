@@ -3,13 +3,13 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'inv-pagenotfound',
+  selector: 'inv-not-implemented',
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './pagenotfound.component.html',
-  styleUrl: './pagenotfound.component.css'
+  templateUrl: './not-implemented.component.html',
+  styleUrl: './not-implemented.component.css'
 })
-export class PageNotFoundComponent {
+export class NotImplementedComponent {
   constructor(private location: Location) { }
 
   goBack(): void {
