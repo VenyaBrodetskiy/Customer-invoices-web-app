@@ -1,36 +1,35 @@
-<div class="h-100 bg-primary side-bar">
+<div class="h-100 bg-dark side-bar p-3">
   <div class="d-flex flex-shrink-0 h-100">
     <ul class="nav nav-pills d-flex flex-column">
       <li class="nav-item my-1">
-        <a [routerLink]="States.home" class="nav-link text-white">
-          <i class="bi bi-house-door fs-3 me-5"></i>
-          <span class="fs-4 section-name">Home</span>
+        <a [routerLink]="States.home" routerLinkActive="active bg-primary" class="nav-link text-white">
+          <i class="bi bi-house-door fs-4 bs-1"></i>
+          <span class="fs-5 section-name ms-3">Home</span>
         </a>
       </li>
       <li class="nav-item my-1">
-        <a [routerLink]="States.invoices" class="nav-link text-white">
-          <i class="bi bi-receipt fs-3 me-5"></i>
-          <span class="fs-4 section-name">Invoices</span>
+        <a [routerLink]="States.invoices" routerLinkActive="active bg-primary" class="nav-link text-white">
+          <i class="bi bi-receipt fs-4 bs-1"></i>
+          <span class="fs-5 section-name ms-3">Invoices</span>
         </a>
       </li>
       <li class="nav-item my-1">
-        <a [routerLink]="States.about" class="nav-link text-white">
-          <i class="bi bi-info-circle-fill fs-3 me-5"></i>
-          <span class="fs-4 section-name">About</span>
+        <a [routerLink]="States.about" routerLinkActive="active bg-primary" class="nav-link text-white">
+          <i class="bi bi-info-circle-fill fs-4 bs-1"></i>
+          <span class="fs-5 section-name ms-3">About</span>
         </a>
       </li>
 
       <li class="nav-item mt-auto">
-        <a [routerLink]="States.profile" class="nav-link text-white">
-          <i class="bi bi-person-circle fs-3 me-5"></i>
-          <span class="fs-4 section-name">User name</span>
+        <a [routerLink]="States.profile" routerLinkActive="active bg-primary" class="nav-link text-white">
+          <i class="bi bi-person-circle fs-4 bs-1"></i>
+          <span class="fs-5 section-name ms-3">User name</span>
         </a>
       </li>
-      
       <li class="nav-item mt-5">
-        <a [routerLink]="States.logout" class="nav-link text-white" (onClick)="console.log('logout')">
-          <i class="bi bi-box-arrow-right fs-3 me-5"></i>
-          <span class="fs-4 section-name">Logout</span>
+        <a [routerLink]="States.logout" routerLinkActive="active bg-primary" class="nav-link text-white" (onClick)="console.log('logout')">
+          <i class="bi bi-box-arrow-right fs-4 bs-1"></i>
+          <span class="fs-5 section-name ms-3">Logout</span>
         </a>
       </li>
     </ul>
