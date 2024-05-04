@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Accessor.Db.Services;
 
-public class InvoicesService(ILogger<InvoicesService> logger, InvoicesContext db)
+public class InvoicesService(InvoicesContext db)
 {
     public async Task<List<InvoiceResponse>> GetAllInvoices()
     {

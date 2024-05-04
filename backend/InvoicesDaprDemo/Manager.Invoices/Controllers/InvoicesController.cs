@@ -29,7 +29,7 @@ public class InvoicesController(ILogger<InvoicesController> logger, DaprClient d
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting all invoices");
-            return Problem();
+            return Problem("An error occurred while getting all invoices");
         }
     }
 
@@ -53,7 +53,7 @@ public class InvoicesController(ILogger<InvoicesController> logger, DaprClient d
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting invoice with ID: {Id}", id);
-            return Problem();
+            return Problem($"An error occurred while getting invoice with ID: {id}");
         }
     }
 
@@ -72,7 +72,7 @@ public class InvoicesController(ILogger<InvoicesController> logger, DaprClient d
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating invoice with ID: {Id}", invoice.Id);
-            return Problem();
+            return Problem($"An error occurred while updating invoice with ID: {invoice.Id}");
         }
     }
 
@@ -91,7 +91,7 @@ public class InvoicesController(ILogger<InvoicesController> logger, DaprClient d
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while adding a new invoice");
-            return Problem();
+            return Problem("An error occurred while adding a new invoice");
         }
     }
 
