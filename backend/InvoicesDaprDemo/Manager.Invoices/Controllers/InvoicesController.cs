@@ -1,37 +1,35 @@
+using Dapr;
 using Dapr.Client;
 using Manager.Invoices.Contracts.Requests;
 using Manager.Invoices.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Manager.Invoices.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class InvoicesController : ControllerBase
+public class InvoicesController(ILogger<InvoicesController> logger, DaprClient daprClient) : ControllerBase
 {
-    private readonly ILogger<InvoicesController> _logger;
-    private readonly DaprClient _daprClient;
-
-    public InvoicesController(ILogger<InvoicesController> logger, DaprClient daprClient)
-    {
-        _logger = logger;
-        _daprClient = daprClient;
-    }
+    private readonly ILogger<InvoicesController> _logger = logger;
+    private readonly DaprClient _daprClient = daprClient;
 
     [HttpGet("/invoices")]
     public async Task<ActionResult<List<InvoiceResponse>>> GetAllInvoices()
     {
         try
         {
+            _logger.LogInformation("Getting all invoices");
+
             var result = await _daprClient.InvokeMethodAsync<List<InvoiceResponse>>(
                 HttpMethod.Get, "accessorDb", "/invoices");
 
-            return result is null ? NotFound() : result;
+            return result is null ? NoContent() : result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return Problem(ex.Message);
+            _logger.LogError(ex, "An error occurred while getting all invoices");
+            return Problem();
         }
     }
 
@@ -40,15 +38,22 @@ public class InvoicesController : ControllerBase
     {
         try
         {
+            _logger.LogInformation("Getting invoice with ID: {Id}", id);
+
             var result = await _daprClient.InvokeMethodAsync<InvoiceResponse>(
                 HttpMethod.Get, "accessorDb", $"/invoice/{id}");
 
-            return result is null ? NotFound() : result;
+            return result;
+        }
+        catch (InvocationException ex) when (ex.Response.StatusCode == HttpStatusCode.NoContent)
+        {
+            _logger.LogInformation("Invoice with ID: {Id} not found", id);
+            return NoContent();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return Problem(ex.Message);
+            _logger.LogError(ex, "An error occurred while getting invoice with ID: {Id}", id);
+            return Problem();
         }
     }
 
@@ -57,15 +62,17 @@ public class InvoicesController : ControllerBase
     {
         try
         {
+            _logger.LogInformation("Updating invoice with ID: {Id}", invoice.Id);
+
             var result = await _daprClient.InvokeMethodAsync<InvoiceResponse, InvoiceResponse>(
                 "accessorDb", "/update-invoice", ToDto(invoice));
 
-            return result is null ? Problem() : result;
+            return result is null ? BadRequest() : result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return Problem(ex.Message);
+            _logger.LogError(ex, "An error occurred while updating invoice with ID: {Id}", invoice.Id);
+            return Problem();
         }
     }
 
@@ -74,15 +81,17 @@ public class InvoicesController : ControllerBase
     {
         try
         {
+            _logger.LogInformation("Adding a new invoice");
+
             var result = await _daprClient.InvokeMethodAsync<NewInvoiceRequest, InvoiceResponse>(
                 "accessorDb", "/add-invoice", invoice);
 
-            return result is null ? Problem() : result;
+            return result is null ? BadRequest() : result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return Problem(ex.Message);
+            _logger.LogError(ex, "An error occurred while adding a new invoice");
+            return Problem();
         }
     }
 

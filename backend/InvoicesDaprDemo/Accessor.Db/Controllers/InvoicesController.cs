@@ -1,56 +1,42 @@
 using Accessor.Db.Contracts.Requests;
 using Accessor.Db.Contracts.Responses;
-using Accessor.Db.Models;
+using Accessor.Db.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Accessor.Db.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class InvoicesController : ControllerBase
+public class InvoicesController(ILogger<InvoicesController> logger, InvoicesService invoicesService) : ControllerBase
 {
-    private readonly ILogger<InvoicesController> _logger;
-    private readonly InvoicesContext _db;
-
-    public InvoicesController(ILogger<InvoicesController> logger, InvoicesContext db)
-    {
-        _logger = logger;
-        _db = db;
-    }
-
     [HttpGet("/invoices")]
     public async Task<ActionResult<List<InvoiceResponse>>> GetAllInvoices()
     {
         try
         {
-            var result = await _db.Invoices
-                .Select(invoice => ToDto(invoice))
-                .ToListAsync();
+            var result = await invoicesService.GetAllInvoices();
+
             return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            logger.LogError(ex.Message);
             return Problem(ex.Message);
         }
     }
 
     [HttpGet("/invoice/{id}")]
-    public async Task<ActionResult<InvoiceResponse>> GetInvoice(int id)
+    public async Task<ActionResult<InvoiceResponse?>> GetInvoice(int id)
     {
         try
         {
-            var result = await _db.Invoices
-                .Where(invoice => invoice.Id == id)
-                .Select(invoice => ToDto(invoice))
-                .FirstAsync();
+            var result = await invoicesService.GetInvoice(id);
 
-            return result;
+            return result is null ? NoContent() : result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            logger.LogError(ex.Message);
             return Problem(ex.Message);
         }
     }
@@ -60,22 +46,13 @@ public class InvoicesController : ControllerBase
     {
         try
         {
-            var invoiceToChange = await _db.Invoices
-                .Where(inv => inv.Id == invoice.Id)
-                .FirstAsync();
+            var result = await invoicesService.UpdateInvoice(invoice);
 
-            invoiceToChange.Status = invoice.Status;
-            invoiceToChange.Amount = invoice.Amount;
-            invoiceToChange.DateIssued = invoice.DateIssued;
-            invoiceToChange.Name = invoice.Name;
-
-            await _db.SaveChangesAsync();
-
-            return ToDto(invoiceToChange);
+            return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            logger.LogError(ex.Message);
             return Problem(ex.Message);
         }
     }
@@ -85,42 +62,14 @@ public class InvoicesController : ControllerBase
     {
         try
         {
-            var newInvoice = FromDto(invoice);
-            _db.Invoices.Add(newInvoice);
+            var result = await invoicesService.AddInvoice(invoice);
 
-            await _db.SaveChangesAsync();
-
-            return ToDto(newInvoice);
-
+            return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            logger.LogError(ex.Message);
             return Problem(ex.Message);
         }
-    }
-
-    private static Invoice FromDto(NewInvoiceRequest invoice)
-    {
-        return new Invoice()
-        {
-            Id = Const.NonExistId,
-            Status = invoice.Status,
-            Amount = invoice.Amount,
-            DateIssued = invoice.DateIssued,
-            Name = invoice.Name,
-        };
-    }
-
-    private static InvoiceResponse ToDto(Invoice invoice)
-    {
-        return new()
-        {
-            Id = invoice.Id,
-            Amount = invoice.Amount,
-            DateIssued = invoice.DateIssued,
-            Name = invoice.Name,
-            Status = invoice.Status,
-        };
     }
 }

@@ -1,4 +1,5 @@
 using Accessor.Db.Models;
+using Accessor.Db.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<InvoicesContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("InvoicesConnection"));
 });
+builder.Services.AddScoped<InvoicesService>();
 
 var app = builder.Build();
 
